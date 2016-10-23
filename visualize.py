@@ -182,7 +182,7 @@ def draw(data, graphicsscene):
     wid = 100
     hei = 100
 
-    for faitemname in ["MinDFA"]:# , "MinDFA", "NFA"]:
+    for faitemname in ["DFA"]:# , "MinDFA", "NFA"]:
         fa = data[faitemname]
         fapaths = getpathtoaccepts(fa["transitions"], 0, [0], fa["accept"])
         fapaths.sort(cmp=lambda x, y: len(x) - len(y))
