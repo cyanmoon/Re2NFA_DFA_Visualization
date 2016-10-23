@@ -4,11 +4,11 @@ Convert Regular Expression to NFA, DFA, Minimum DFA and visualize NFA, DFA, Mini
 
 ##1. Get NFA, DFA, Minimum DFA
 
-* MacOS:		./bin/Re2DFA "(abc)+d*|efg"
+* MacOS:		_./bin/Re2DFA "(abc)+d*|efg"_
 
-* Windows:	bin\Re2DFA.exe "(abc)+d*|efg"
+* Windows:	_bin\Re2DFA.exe "(abc)+d*|efg"_
 
-NFA, DFA, Minimum DFA are saved in file bin/dfa.dfa
+NFA, DFA, Minimum DFA are saved in file _bin/dfa.dfa_
 
 ##2. Visualization
 
@@ -16,7 +16,7 @@ NFA, DFA, Minimum DFA are saved in file bin/dfa.dfa
 * python visualize.py
 
 #You should know:
-##1. Visualization requires PySide   
+##1. Visualization requires _PySide_   
 * https://pypi.python.org/pypi/PySide/1.2.4
 * http://wiki.qt.io/PySide
 
