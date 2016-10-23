@@ -27,7 +27,7 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene):
     line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
     graphicsscene.addItem(line)
 
-def parseSerializedFile(filename = "/Users/CERN/Library/Developer/Xcode/DerivedData/CompilerXcode-cpfctfpetjgqfrckuuzzggvxlekf/Build/Products/Debug/dfa.dfa"):
+def parseSerializedFile(filename = "./bin/dfa.dfa"):
     serializedcontent = ""
     with open(filename) as f:
         serializedcontent = f.read()
