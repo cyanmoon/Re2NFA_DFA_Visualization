@@ -1,0 +1,3 @@
+create Log Instance
+ >>ChechReSyntax:  adf( 0 Clear Log Instane
+ 
