@@ -9,9 +9,42 @@ import re
 import math
 
 
+def normalize(l):
+    sumnum = 0
+    for i in l:
+        sumnum += i * i
+    ret = []
+    for i in l:
+        ret.append(i / math.sqrt(sumnum))
+    return ret
+
+
+def mullf(l, f):
+    ret = []
+    for i in l:
+        ret.append(i*f)
+    return ret
+
+def addl(la, lb):
+    ret = []
+    for i in range(len(la)):
+        ret.append(la[i] + lb[i])
+    return ret
+
+
 def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
+    linvec = [fromx - tox, fromy - toy]
+    if math.fabs(linvec[0]) < 0.0001 and math.fabs(linvec[1]) < 0.0001:
+        return
+
+    radius = 10
+    newfrom = addl([fromx, fromy], mullf(normalize(linvec), -radius))
+    newto = addl([tox, toy], mullf(normalize(linvec), radius))
+    fromx, fromy = newfrom
+    tox, toy = newto
     line = QGraphicsLineItem(fromx, fromy, tox, toy)
     graphicsscene.addItem(line)
+
 
     linvec = [fromx - tox, fromy - toy]
     angle = math.pi/6
@@ -29,8 +62,10 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
 
     if not textstr == None:
         text = QGraphicsTextItem()
-        text.setPos((fromx+fromy)/2, (tox + toy)/2)
         text.setPlainText(textstr)
+        boudingRect = text.boundingRect()
+        text.setPos((fromx + fromy)/2.0 - boudingRect.width()/2, (tox + toy)/2.0 - boudingRect.height()/2)
+
         graphicsscene.addItem(text)
 
 def parseSerializedFile(filename = "./bin/dfa.dfa"):
@@ -169,12 +204,13 @@ def draw(data, graphicsscene):
                 pos = posdic[key]
                 textItem = QGraphicsTextItem()
                 textItem.setPlainText(str(key))
-                textItem.setPos(pos[0], pos[1])
-                textItem.setScale(1.0)
+                boundingRect = textItem.boundingRect()
+                textItem.setPos(pos[0] - boundingRect.width()/2, pos[1] - boundingRect.height()/2)
+                #textItem.setPos()
                 graphicsscene.addItem(textItem)
 
                 ellipse = QGraphicsEllipseItem(None, None)
-                ellipse.setRect(0, 0, 20, 20)
+                ellipse.setRect(-10, -10, 20, 20)
                 ellipse.setPos(pos[0], pos[1])
                 graphicsscene.addItem(ellipse)
 
