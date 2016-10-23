@@ -1,81 +1,73 @@
 create Log Instance
- >>ChechReSyntax:  abc*d|ebc*d|ccc*d|qc*d 1 NFA: 
+ >>ChechReSyntax:  a(b)*d|1234|ppeef|eee 1 NFA: 
 3 ==== a	====> 4 
+5 ==== epsilon	====> 4 
 2 ==== epsilon	====> 3 
 1 ==== epsilon	====> 2 
 0 ==== epsilon	====> 1 
 4 ==== b	====> 5 
-6 ==== epsilon	====> 5 
-5 ==== c	====> 6 
-6 ==== epsilon	====> 7 
-5 ==== epsilon	====> 7 
-7 ==== d	====> 8 
-2 ==== epsilon	====> 9 
-9 ==== e	====> 10 
-10 ==== b	====> 11 
-12 ==== epsilon	====> 11 
-11 ==== c	====> 12 
+5 ==== epsilon	====> 6 
+4 ==== epsilon	====> 6 
+6 ==== d	====> 7 
+2 ==== epsilon	====> 8 
+8 ==== 1	====> 9 
+9 ==== 2	====> 10 
+10 ==== 3	====> 11 
+11 ==== 4	====> 12 
+7 ==== epsilon	====> 13 
 12 ==== epsilon	====> 13 
-11 ==== epsilon	====> 13 
-13 ==== d	====> 14 
-8 ==== epsilon	====> 15 
-14 ==== epsilon	====> 15 
-1 ==== epsilon	====> 16 
-16 ==== c	====> 17 
-17 ==== c	====> 18 
-19 ==== epsilon	====> 18 
-18 ==== c	====> 19 
+1 ==== epsilon	====> 14 
+14 ==== p	====> 15 
+15 ==== p	====> 16 
+16 ==== e	====> 17 
+17 ==== e	====> 18 
+18 ==== f	====> 19 
+13 ==== epsilon	====> 20 
 19 ==== epsilon	====> 20 
-18 ==== epsilon	====> 20 
-20 ==== d	====> 21 
-15 ==== epsilon	====> 22 
-21 ==== epsilon	====> 22 
-0 ==== epsilon	====> 23 
-23 ==== q	====> 24 
-25 ==== epsilon	====> 24 
-24 ==== c	====> 25 
-25 ==== epsilon	====> 26 
-24 ==== epsilon	====> 26 
-26 ==== d	====> 27 
-22 ==== epsilon	====> 28 
-27 ==== epsilon	====> 28 
+0 ==== epsilon	====> 21 
+21 ==== e	====> 22 
+22 ==== e	====> 23 
+23 ==== e	====> 24 
+20 ==== epsilon	====> 25 
+24 ==== epsilon	====> 25 
 Accept: 
-28 >>ChechReSyntax:  abc*d|ebc*d|ccc*d|qc*d 1 hash of new state  0 41625398 hash of new state  4 818 hash of new state  6 919 hash of new state  5 26987 hash of new state  3 10 hash of new state  7 376 hash of new state  9 520207 hash of new state  8 12388 hash of new state  2 17 hash of new state  10 614 hash of new state  12 23623 hash of new state  11 20249 hash of new state  1 4 hash of new state  13 172 hash of new state  15 304585 hash of new state  14 5650 BuildDFA end abc*d|ebc*d|ccc*d|qc*d DFA:
- 0==== a ====>1
-0==== c ====>2
-0==== e ====>3
-0==== q ====>4
-1==== b ====>13
-2==== c ====>10
-3==== b ====>7
-4==== c ====>5
-4==== d ====>6
-5==== c ====>5
-5==== d ====>6
-7==== c ====>8
-7==== d ====>9
-8==== c ====>8
-8==== d ====>9
-10==== c ====>11
-10==== d ====>12
-11==== c ====>11
-11==== d ====>12
-13==== c ====>14
-13==== d ====>15
-14==== c ====>14
+25 >>ChechReSyntax:  a(b)*d|1234|ppeef|eee 1 hash of new state  0 41624241 hash of new state  4 22 hash of new state  5 23 hash of new state  6 817 hash of new state  3 15 hash of new state  7 16 hash of new state  8 17 hash of new state  9 18 hash of new state  10 21376 hash of new state  2 9 hash of new state  11 10 hash of new state  12 11 hash of new state  13 446086 hash of new state  1 138 hash of new state  15 266401 hash of new state  14 4527 BuildDFA end a(b)*d|1234|ppeef|eee DFA:
+ 0==== 1 ====>2
+0==== a ====>1
+0==== e ====>4
+0==== p ====>3
+1==== b ====>14
+1==== d ====>15
+2==== 2 ====>11
+3==== p ====>7
+4==== e ====>5
+5==== e ====>6
+7==== e ====>8
+8==== e ====>9
+9==== f ====>10
+11==== 3 ====>12
+12==== 4 ====>13
+14==== b ====>14
 14==== d ====>15
  Accept:
- 6 , 9 , 12 , 15 ,  
+ 6 , 10 , 13 , 15 ,  
 Minimum DFA:
- 0==== a ====>2
-0==== c ====>1
-0==== e ====>2
-0==== q ====>3
-1==== c ====>3
-2==== b ====>3
-3==== c ====>3
-3==== d ====>4
+ 0==== 1 ====>1
+0==== a ====>10
+0==== e ====>3
+0==== p ====>2
+1==== 2 ====>8
+2==== p ====>5
+3==== e ====>4
+4==== e ====>11
+5==== e ====>6
+6==== e ====>7
+7==== f ====>11
+8==== 3 ====>9
+9==== 4 ====>11
+10==== b ====>10
+10==== d ====>11
  
 Accept:
-  4 Clear Log Instane
+  11 Clear Log Instane
  

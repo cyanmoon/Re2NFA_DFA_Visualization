@@ -52,9 +52,11 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
         , linvec[0]*math.sin(angle) + linvec[1]*math.cos(angle)]
     downarrowvec = [linvec[0] * math.cos(-angle) - linvec[1] * math.sin(-angle)
         , linvec[0] * math.sin(-angle) + linvec[1] * math.cos(-angle)]
-    arrowlen = 0.1
-    uparrowendpos = [tox + arrowlen*uparrowvec[0], toy + arrowlen*uparrowvec[1]]
-    downarrowendpos = [tox + arrowlen*downarrowvec[0], toy + arrowlen*downarrowvec[1]]
+    arrowlen = 0.8*radius
+    normalizedUp = normalize(uparrowvec)
+    normalizedDown = normalize(downarrowvec)
+    uparrowendpos = [tox + arrowlen*normalizedUp[0], toy + arrowlen*normalizedUp[1]]
+    downarrowendpos = [tox + arrowlen*normalizedDown[0], toy + arrowlen*normalizedDown[1]]
     line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
     graphicsscene.addItem(line)
     line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
@@ -177,13 +179,13 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates):
     return ret
 
 def draw(data, graphicsscene):
-    wid = 50
-    hei = 60
+    wid = 100
+    hei = 100
 
     for faitemname in ["MinDFA"]:# , "MinDFA", "NFA"]:
         fa = data[faitemname]
         fapaths = getpathtoaccepts(fa["transitions"], 0, [0], fa["accept"])
-        fapaths.sort(cmp=lambda x, y: len(y) - len(x))
+        fapaths.sort(cmp=lambda x, y: len(x) - len(y))
         print fapaths
         posdic = {}
         maxlen = len(fapaths[0]) * wid
