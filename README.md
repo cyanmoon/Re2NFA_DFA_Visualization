@@ -4,9 +4,9 @@ Convert Regular Expression to NFA, DFA, Minimum DFA and visualize NFA, DFA, Mini
 
 ##1. Get NFA, DFA, Minimum DFA
 
-* MacOS: 		./bin/Re2DFA “(abc)+d*|efg”
+* MacOS:		./bin/Re2DFA "(abc)+d*|efg"
 
-* Windows:	bin\Re2DFA.exe “(abc)+d*|efg”
+* Windows:	bin\Re2DFA.exe "(abc)+d*|efg"
 
 NFA, DFA, Minimum DFA are saved in file bin/dfa.dfa
 
