@@ -1,73 +1,15 @@
 create Log Instance
- >>ChechReSyntax:  a(b)*d|1234|ppeef|eee 1 NFA: 
-3 ==== a	====> 4 
-5 ==== epsilon	====> 4 
-2 ==== epsilon	====> 3 
-1 ==== epsilon	====> 2 
-0 ==== epsilon	====> 1 
-4 ==== b	====> 5 
-5 ==== epsilon	====> 6 
-4 ==== epsilon	====> 6 
-6 ==== d	====> 7 
-2 ==== epsilon	====> 8 
-8 ==== 1	====> 9 
-9 ==== 2	====> 10 
-10 ==== 3	====> 11 
-11 ==== 4	====> 12 
-7 ==== epsilon	====> 13 
-12 ==== epsilon	====> 13 
-1 ==== epsilon	====> 14 
-14 ==== p	====> 15 
-15 ==== p	====> 16 
-16 ==== e	====> 17 
-17 ==== e	====> 18 
-18 ==== f	====> 19 
-13 ==== epsilon	====> 20 
-19 ==== epsilon	====> 20 
-0 ==== epsilon	====> 21 
-21 ==== e	====> 22 
-22 ==== e	====> 23 
-23 ==== e	====> 24 
-20 ==== epsilon	====> 25 
-24 ==== epsilon	====> 25 
+ >>ChechReSyntax:  abcd 1 NFA: 
+0 ==== a	====> 1 
+1 ==== b	====> 2 
+2 ==== c	====> 3 
+3 ==== d	====> 4 
 Accept: 
-25 >>ChechReSyntax:  a(b)*d|1234|ppeef|eee 1 hash of new state  0 41624241 hash of new state  4 22 hash of new state  5 23 hash of new state  6 817 hash of new state  3 15 hash of new state  7 16 hash of new state  8 17 hash of new state  9 18 hash of new state  10 21376 hash of new state  2 9 hash of new state  11 10 hash of new state  12 11 hash of new state  13 446086 hash of new state  1 138 hash of new state  15 266401 hash of new state  14 4527 BuildDFA end a(b)*d|1234|ppeef|eee DFA:
- 0==== 1 ====>2
-0==== a ====>1
-0==== e ====>4
-0==== p ====>3
-1==== b ====>14
-1==== d ====>15
-2==== 2 ====>11
-3==== p ====>7
-4==== e ====>5
-5==== e ====>6
-7==== e ====>8
-8==== e ====>9
-9==== f ====>10
-11==== 3 ====>12
-12==== 4 ====>13
-14==== b ====>14
-14==== d ====>15
+4 >>ChechReSyntax:  abcd 1 hash of new state  0 0 hash of new state  1 1 hash of new state  2 2 hash of new state  3 3 hash of new state  4 4 BuildDFA end abcd DFA:
+ 0==== a ====>1
+1==== b ====>2
+2==== c ====>3
+3==== d ====>4
  Accept:
- 6 , 10 , 13 , 15 ,  
-Minimum DFA:
- 0==== 1 ====>1
-0==== a ====>10
-0==== e ====>3
-0==== p ====>2
-1==== 2 ====>8
-2==== p ====>5
-3==== e ====>4
-4==== e ====>11
-5==== e ====>6
-6==== e ====>7
-7==== f ====>11
-8==== 3 ====>9
-9==== 4 ====>11
-10==== b ====>10
-10==== d ====>11
- 
-Accept:
-  11 Clear Log Instane
+ 4 ,  Minimize failed! Cur DFA is already minimum!!!! Clear Log Instane
  
