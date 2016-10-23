@@ -9,7 +9,7 @@ import re
 import math
 
 
-def addArrow(fromx, fromy, tox, toy, graphicsscene):
+def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     line = QGraphicsLineItem(fromx, fromy, tox, toy)
     graphicsscene.addItem(line)
 
@@ -19,13 +19,19 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene):
         , linvec[0]*math.sin(angle) + linvec[1]*math.cos(angle)]
     downarrowvec = [linvec[0] * math.cos(-angle) - linvec[1] * math.sin(-angle)
         , linvec[0] * math.sin(-angle) + linvec[1] * math.cos(-angle)]
-    arrowlen = 0.2
+    arrowlen = 0.1
     uparrowendpos = [tox + arrowlen*uparrowvec[0], toy + arrowlen*uparrowvec[1]]
     downarrowendpos = [tox + arrowlen*downarrowvec[0], toy + arrowlen*downarrowvec[1]]
     line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
     graphicsscene.addItem(line)
     line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
     graphicsscene.addItem(line)
+
+    if not textstr == None:
+        text = QGraphicsTextItem()
+        text.setPos((fromx+fromy)/2, (tox + toy)/2)
+        text.setPlainText(textstr)
+        graphicsscene.addItem(text)
 
 def parseSerializedFile(filename = "./bin/dfa.dfa"):
     serializedcontent = ""
@@ -56,6 +62,7 @@ def parseSerializedFile(filename = "./bin/dfa.dfa"):
         transpat = r"([\d]+)====([.\w\W\d\D\s\S\b\B]+?)====>([\d]+)"
         transitions = re.findall(transpat, seg)
         transdic = {}
+        translinedic = {}
         for line in transitions:
             ifrom = int(line[0])
             cha = line[1].strip()
@@ -71,7 +78,33 @@ def parseSerializedFile(filename = "./bin/dfa.dfa"):
                 chadic[cha] = [ito]
                 transdic[ifrom] = chadic
 
-        ret[i[0]]["transitions"] = transdic
+            if ifrom in translinedic:
+                if ito in translinedic[ifrom]:
+                    translinedic[ifrom][ito] += "," + cha
+                else:
+                    translinedic[ifrom][ito] = cha
+            else:
+                todic = {}
+                todic[ito] = cha
+                translinedic[ifrom] = todic
+
+        mergedtransdic = {}
+        for ifrom in translinedic.keys():
+            line = translinedic[ifrom]
+            for ito in line.keys():
+                cha = line[ito]
+                if ifrom in mergedtransdic:
+                    if cha in mergedtransdic[ifrom]:
+                        mergedtransdic[ifrom][cha].append(ito)
+                    else:
+                        mergedtransdic[ifrom][cha] = [ito]
+
+                else:
+                    chadic = {}
+                    chadic[cha] = [ito]
+                    mergedtransdic[ifrom] = chadic
+
+        ret[i[0]]["transitions"] = mergedtransdic
         accpat = r"Accept:\n*([\d,]+)"
         accepts = re.findall(accpat, seg)
         accepts = accepts[0].replace(",", " ").strip()
@@ -92,16 +125,20 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates):
             if ito in processed and ito not in accpetstates:
                 continue
             else:
+                oldprocessed = []
+                oldprocessed.extend(processed)
                 processed.append(ito)
                 if ito in accpetstates:
                     ret.append([curstate, ito])
                 else:
+
                     l = getpathtoaccepts(trans, ito, processed, accpetstates)
                     if not l == None:
                         for item in l:
                             newpath = [curstate]
                             newpath.extend(item)
                             ret.append(newpath)
+                processed = oldprocessed
     return ret
 
 def draw(data, graphicsscene):
@@ -141,16 +178,16 @@ def draw(data, graphicsscene):
                 ellipse.setPos(pos[0], pos[1])
                 graphicsscene.addItem(ellipse)
 
-        # draw transitions
-        # for ifromstate in trans.keys():
-        #     frompos = posdic[ifromstate]
-        #     transto = trans[ifromstate]
-        #     for cha in transto.keys():
-        #         itos = transto[cha]
-        #         for itostate in itos:
-        #             topos = posdic[itostate]
-        #             addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene)
-
+        #draw transitions
+        trans = fa["transitions"]
+        for ifromstate in trans.keys():
+            frompos = posdic[ifromstate]
+            transto = trans[ifromstate]
+            for cha in transto.keys():
+                itos = transto[cha]
+                for itostate in itos:
+                    topos = posdic[itostate]
+                    addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, None)
 
 if __name__ == "__main__":
     dfanfa = parseSerializedFile()
