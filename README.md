@@ -1,5 +1,5 @@
 # Re2NFA_DFA_Visualization
-Convert Regular Expression to NFA, DFA, Minimum DFA and visualize NFA, DFA, Minimum DFA.
+Convert `Regular Expression` to `NFA`, `DFA`, `Minimum DFA` and visualize `NFA`, `DFA`, `Minimum DFA`.
 #Usage:
 
 ##1. Get NFA, DFA, Minimum DFA
