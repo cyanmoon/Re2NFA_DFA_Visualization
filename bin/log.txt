@@ -1,0 +1,32 @@
+create Log Instance
+ >>ChechReSyntax:  123|563 1 NFA: 
+1 ==== 1	====> 2 
+0 ==== epsilon	====> 1 
+2 ==== 2	====> 3 
+3 ==== 3	====> 4 
+0 ==== epsilon	====> 5 
+5 ==== 5	====> 6 
+6 ==== 6	====> 7 
+7 ==== 3	====> 8 
+4 ==== epsilon	====> 9 
+8 ==== epsilon	====> 9 
+Accept: 
+9 >>ChechReSyntax:  123|563 1 hash of new state  0 38 hash of new state  2 6 hash of new state  3 7 hash of new state  4 273 hash of new state  1 2 hash of new state  5 3 hash of new state  6 141 BuildDFA end 123|563 DFA:
+ 0==== 1 ====>1
+0==== 5 ====>2
+1==== 2 ====>5
+2==== 6 ====>3
+3==== 3 ====>4
+5==== 3 ====>6
+ Accept:
+ 4 , 6 ,  
+Minimum DFA:
+ 0==== 1 ====>1
+0==== 5 ====>2
+1==== 2 ====>3
+2==== 6 ====>3
+3==== 3 ====>4
+ 
+Accept:
+  4 Clear Log Instane
+ 

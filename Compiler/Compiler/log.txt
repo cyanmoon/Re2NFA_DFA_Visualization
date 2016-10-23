@@ -1,0 +1,195 @@
+create Log Instance
+ >>ChechReSyntax:  ade|bde 1 NFA: 
+1 ==== a	====> 2 
+0 ==== epsilon	====> 1 
+2 ==== d	====> 3 
+3 ==== e	====> 4 
+0 ==== epsilon	====> 5 
+5 ==== b	====> 6 
+6 ==== d	====> 7 
+7 ==== e	====> 8 
+4 ==== epsilon	====> 9 
+8 ==== epsilon	====> 9 
+Accept: 
+9 >>ChechReSyntax:  ade|bde 1 hash of new state  0 38 hash of new state  2 6 hash of new state  3 7 hash of new state  4 273 hash of new state  1 2 hash of new state  5 3 hash of new state  6 141 BuildDFA end ade|bde DFA:
+ 0==== a ====>1
+0==== b ====>2
+1==== d ====>5
+2==== d ====>3
+3==== e ====>4
+5==== e ====>6
+ Accept:
+ 4 , 6 ,  
+Minimum DFA:
+ 0==== a ====>1
+0==== b ====>1
+1==== d ====>2
+2==== e ====>3
+ 
+Accept:
+  3 >>ChechReSyntax:  (a|b)|(c)(d)(e)(f) 1 NFA: 
+2 ==== a	====> 3 
+1 ==== epsilon	====> 2 
+0 ==== epsilon	====> 1 
+1 ==== epsilon	====> 4 
+4 ==== b	====> 5 
+3 ==== epsilon	====> 6 
+5 ==== epsilon	====> 6 
+0 ==== epsilon	====> 7 
+7 ==== c	====> 8 
+8 ==== d	====> 9 
+9 ==== e	====> 10 
+10 ==== f	====> 11 
+6 ==== epsilon	====> 12 
+11 ==== epsilon	====> 12 
+Accept: 
+12 >>ChechReSyntax:  (a|b)|(c)(d)(e)(f) 1 hash of new state  0 38254 hash of new state  3 8 hash of new state  4 9 hash of new state  5 10 hash of new state  6 375 hash of new state  2 5655 hash of new state  1 3477 BuildDFA end (a|b)|(c)(d)(e)(f) DFA:
+ 0==== a ====>1
+0==== b ====>2
+0==== c ====>3
+3==== d ====>4
+4==== e ====>5
+5==== f ====>6
+ Accept:
+ 1 , 2 , 6 ,  Minimize failed! Cur DFA is already minimum!!!! >>ChechReSyntax:  a|b|c|d|e|fg 1 NFA: 
+5 ==== a	====> 6 
+4 ==== epsilon	====> 5 
+3 ==== epsilon	====> 4 
+2 ==== epsilon	====> 3 
+1 ==== epsilon	====> 2 
+0 ==== epsilon	====> 1 
+4 ==== epsilon	====> 7 
+7 ==== b	====> 8 
+6 ==== epsilon	====> 9 
+8 ==== epsilon	====> 9 
+3 ==== epsilon	====> 10 
+10 ==== c	====> 11 
+9 ==== epsilon	====> 12 
+11 ==== epsilon	====> 12 
+2 ==== epsilon	====> 13 
+13 ==== d	====> 14 
+12 ==== epsilon	====> 15 
+14 ==== epsilon	====> 15 
+1 ==== epsilon	====> 16 
+16 ==== e	====> 17 
+15 ==== epsilon	====> 18 
+17 ==== epsilon	====> 18 
+0 ==== epsilon	====> 19 
+19 ==== f	====> 20 
+20 ==== g	====> 21 
+18 ==== epsilon	====> 22 
+21 ==== epsilon	====> 22 
+Accept: 
+22 >>ChechReSyntax:  a|b|c|d|e|fg 1 hash of new state  0 4057993392 hash of new state  6 20 hash of new state  7 715 hash of new state  5 19129 hash of new state  4 520069 hash of new state  3 13493326 hash of new state  2 324204628 hash of new state  1 245933842 BuildDFA end a|b|c|d|e|fg DFA:
+ 0==== a ====>1
+0==== b ====>2
+0==== c ====>3
+0==== d ====>4
+0==== e ====>5
+0==== f ====>6
+6==== g ====>7
+ Accept:
+ 1 , 2 , 3 , 4 , 5 , 7 ,  Minimize failed! Cur DFA is already minimum!!!! >>ChechReSyntax:  (a(b(c(d(e))))) 1 NFA: 
+0 ==== a	====> 1 
+1 ==== b	====> 2 
+2 ==== c	====> 3 
+3 ==== d	====> 4 
+4 ==== e	====> 5 
+Accept: 
+5 >>ChechReSyntax:  (a(b(c(d(e))))) 1 hash of new state  0 0 hash of new state  1 1 hash of new state  2 2 hash of new state  3 3 hash of new state  4 4 hash of new state  5 5 BuildDFA end (a(b(c(d(e))))) DFA:
+ 0==== a ====>1
+1==== b ====>2
+2==== c ====>3
+3==== d ====>4
+4==== e ====>5
+ Accept:
+ 5 ,  Minimize failed! Cur DFA is already minimum!!!! >>ChechReSyntax:  (aA|(bB|(cC|(dD|(eE))))) 1 NFA: 
+1 ==== a	====> 2 
+0 ==== epsilon	====> 1 
+2 ==== A	====> 3 
+0 ==== epsilon	====> 4 
+4 ==== epsilon	====> 5 
+5 ==== b	====> 6 
+6 ==== B	====> 7 
+4 ==== epsilon	====> 8 
+8 ==== epsilon	====> 9 
+9 ==== c	====> 10 
+10 ==== C	====> 11 
+8 ==== epsilon	====> 12 
+12 ==== epsilon	====> 13 
+13 ==== d	====> 14 
+14 ==== D	====> 15 
+12 ==== epsilon	====> 16 
+16 ==== e	====> 17 
+17 ==== E	====> 18 
+15 ==== epsilon	====> 19 
+18 ==== epsilon	====> 19 
+11 ==== epsilon	====> 20 
+19 ==== epsilon	====> 20 
+7 ==== epsilon	====> 21 
+20 ==== epsilon	====> 21 
+3 ==== epsilon	====> 22 
+21 ==== epsilon	====> 22 
+Accept: 
+22 >>ChechReSyntax:  (aA|(bB|(cC|(dD|(eE))))) 1 hash of new state  0 745175876 hash of new state  5 17 hash of new state  6 22051876 hash of new state  4 14 hash of new state  7 18494113 hash of new state  3 10 hash of new state  8 417802 hash of new state  2 6 hash of new state  9 8338 hash of new state  1 2 hash of new state  10 121 BuildDFA end (aA|(bB|(cC|(dD|(eE))))) DFA:
+ 0==== a ====>1
+0==== b ====>2
+0==== c ====>3
+0==== d ====>4
+0==== e ====>5
+1==== A ====>10
+2==== B ====>9
+3==== C ====>8
+4==== D ====>7
+5==== E ====>6
+ Accept:
+ 6 , 7 , 8 , 9 , 10 ,  Minimize failed! Cur DFA is already minimum!!!! >>ChechReSyntax:  abc* 1 NFA: 
+0 ==== a	====> 1 
+1 ==== b	====> 2 
+3 ==== epsilon	====> 2 
+2 ==== c	====> 3 
+3 ==== epsilon	====> 4 
+2 ==== epsilon	====> 4 
+Accept: 
+4 >>ChechReSyntax:  abc* 1 hash of new state  0 0 hash of new state  1 1 hash of new state  2 70 hash of new state  3 2281 BuildDFA end abc* DFA:
+ 0==== a ====>1
+1==== b ====>2
+2==== c ====>3
+3==== c ====>3
+ Accept:
+ 2 , 3 ,  Minimize failed! Cur DFA is already minimum!!!! >>ChechReSyntax:  (abc)+ 1 NFA: 
+3 ==== epsilon	====> 0 
+0 ==== a	====> 1 
+1 ==== b	====> 2 
+2 ==== c	====> 3 
+Accept: 
+3 >>ChechReSyntax:  (abc)+ 1 hash of new state  0 0 hash of new state  1 1 hash of new state  2 2 hash of new state  3 3 BuildDFA end (abc)+ DFA:
+ 0==== a ====>1
+1==== b ====>2
+2==== c ====>3
+3==== a ====>1
+ Accept:
+ 3 ,  Minimize failed! Cur DFA is already minimum!!!! >>ChechReSyntax:  (abc)+|hlp 1 NFA: 
+4 ==== epsilon	====> 1 
+1 ==== a	====> 2 
+0 ==== epsilon	====> 1 
+2 ==== b	====> 3 
+3 ==== c	====> 4 
+0 ==== epsilon	====> 5 
+5 ==== h	====> 6 
+6 ==== l	====> 7 
+7 ==== p	====> 8 
+4 ==== epsilon	====> 9 
+8 ==== epsilon	====> 9 
+Accept: 
+9 >>ChechReSyntax:  (abc)+|hlp 1 hash of new state  0 38 hash of new state  2 6 hash of new state  3 7 hash of new state  4 273 hash of new state  1 2 hash of new state  5 3 hash of new state  6 1230 BuildDFA end (abc)+|hlp DFA:
+ 0==== a ====>1
+0==== h ====>2
+1==== b ====>5
+2==== l ====>3
+3==== p ====>4
+5==== c ====>6
+6==== a ====>1
+ Accept:
+ 4 , 6 ,  Minimize failed! Cur DFA is already minimum!!!! Clear Log Instane
+ 

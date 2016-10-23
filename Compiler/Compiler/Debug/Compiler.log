@@ -1,0 +1,35 @@
+﻿Build started 2016/10/23 17:02:36.
+     1>Project "C:\vsproj\CG\Compiler\Compiler\Compiler\Compiler.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /D _MBCS /D _CRT_SECURE_NO_WARNINGS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Re.cpp
+         Re.cpp
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(93): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(115): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(228): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(288): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(299): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(311): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(350): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(367): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(370): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(844): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(961): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(967): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(976): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(1048): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(1064): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(1072): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(1165): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(1225): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\vsproj\cg\compiler\compiler\compiler\re.cpp(1300): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\vsproj\CG\Compiler\Compiler\Debug\Compiler.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\vsproj\CG\Compiler\Compiler\Debug\Compiler.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\vsproj\CG\Compiler\Compiler\Debug\Compiler.lib" /MACHINE:X86 Debug\Log.obj
+         Debug\main.obj
+         Debug\Re.obj
+         LINK : C:\vsproj\CG\Compiler\Compiler\Debug\Compiler.exe not found or not built by the last incremental link; performing full link
+         Compiler.vcxproj -> C:\vsproj\CG\Compiler\Compiler\Debug\Compiler.exe
+     1>Done Building Project "C:\vsproj\CG\Compiler\Compiler\Compiler\Compiler.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.59
