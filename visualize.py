@@ -10,8 +10,8 @@ import os
 import math
 import copy
 
-ellipse_radius = 10
-wid = 100
+ellipse_radius = 15
+wid = 200
 hei = 100
 
 
@@ -55,6 +55,7 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     fromx, fromy = newfrom
     tox, toy = newto
     line = QGraphicsLineItem(fromx, fromy, tox, toy)
+    line.setPen(QPen(QColor(91, 155, 213)))
     graphicsscene.addItem(line)
 
 
@@ -70,21 +71,23 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     uparrowendpos = [tox + arrowlen*normalizedUp[0], toy + arrowlen*normalizedUp[1]]
     downarrowendpos = [tox + arrowlen*normalizedDown[0], toy + arrowlen*normalizedDown[1]]
     line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
+    line.setPen(QPen(QColor(91, 155, 213)))
     graphicsscene.addItem(line)
     line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
+    line.setPen(QPen(QColor(91, 155, 213)))
     graphicsscene.addItem(line)
 
     if not textstr is None:
         text = QGraphicsTextItem()
-        text.setPlainText(textstr)
+        text.setPlainText("%s"%(textstr))
         font = QFont()
-        font.setPointSizeF(ellipse_radius)
+        font.setPointSizeF(ellipse_radius*1.2)
         text.setFont(font)
         text.adjustSize()
         boudingRect = text.boundingRect()
-        textpos = addl([tox, toy], mullf(linvec, 0.75))
+        textpos = addl([tox, toy], mullf(linvec, 0.85))
         text.setPos(textpos[0], textpos[1] - boudingRect.height()*0.5)
-        text.setScale(1.5)
+        text.setDefaultTextColor(QColor(91, 155, 213))
         graphicsscene.addItem(text)
 
 
@@ -205,16 +208,58 @@ def draw(data, graphicsscene, fa):
     global wid, hei, ellipse_radius
     fapaths = getpathtoaccepts(fa["transitions"], 0, {0: 1}, fa["accept"])
     fapaths.sort(cmp=lambda x, y: len(x) - len(y))
+    length = len(fapaths)
+    maxlenpath = fapaths[-1]
+    index = 0
+    pathstorm = []
+    for item in fapaths:
+        if index == length - 1:
+            continue
+
+        statestorm = []
+        for state in item:
+            if state in maxlenpath:
+                statestorm.append(state)
+
+        for state in statestorm:
+            item.remove(state)
+
+        if len(item) == 0:
+            pathstorm.append(item)
+        index += 1
+
+    for item in pathstorm:
+        fapaths.remove(item)
+
+    if length % 2 == 0:
+        patha = fapaths[0:length/2]
+        pathb = fapaths[length/2:]
+        patha.sort(cmp=lambda x, y: len(x) - len(y))
+        pathb.sort(cmp=lambda x, y: len(y) - len(x))
+        if len(pathb[0]) > len(patha[-1]):
+            tmp = patha[-1]
+            patha[-1] = pathb[0]
+            pathb[0] = tmp
+        fapaths = patha + pathb
+    else:
+        patha = fapaths[0:length/2]
+        pathb = fapaths[length/2: -1]
+        patha.sort(cmp=lambda x, y: len(x) - len(y))
+        pathb.sort(cmp=lambda x, y: len(y) - len(x))
+        fapaths = patha + [fapaths[-1]] + pathb
+
     print fapaths
     posdic = {}
-    maxlen = len(fapaths[0]) * wid
+    maxlen = len(maxlenpath) * hei
     row = 0
     for item in fapaths:
         col = 0
         statenum = len(item)
         for state in item:
             if not posdic.has_key(state):
-                posdic[state] = [row * wid, col * (maxlen) * 1.0 / statenum]
+                offset = math.fabs(row - length/2)/length
+                posdic[state] = [row * wid, -offset * maxlen +  col * maxlen * 1.0 / statenum]
+
             col += 1
 
         row += 1
@@ -224,19 +269,11 @@ def draw(data, graphicsscene, fa):
     accepts = fa["accept"]
     for key in posdic.keys():
         pos = posdic[key]
-        textItem = QGraphicsTextItem()
-        textItem.setPlainText(str(key))
-        font = QFont()
-        font.setPointSizeF(ellipse_radius * 1.5)
-        textItem.setFont(font)
-        textItem.adjustSize()
-        boundingRect = textItem.boundingRect()
-        textItem.setPos(pos[0] - boundingRect.width() / 2, pos[1] - boundingRect.height() / 2)
-        graphicsscene.addItem(textItem)
-
         ellipse = QGraphicsEllipseItem(None, None)
         ellipse.setRect(-ellipse_radius, -ellipse_radius, ellipse_radius * 2, ellipse_radius * 2)
         ellipse.setPos(pos[0], pos[1])
+        ellipse.setBrush(QBrush(QColor(112,173,71), style = Qt.SolidPattern))
+        ellipse.setPen(QPen(QColor(91, 155, 213)))
         graphicsscene.addItem(ellipse)
         if key in accepts:
             ellipseacc = QGraphicsEllipseItem(None, None)
@@ -244,6 +281,18 @@ def draw(data, graphicsscene, fa):
                                1.3 * 2 * ellipse_radius)
             ellipseacc.setPos(pos[0], pos[1])
             graphicsscene.addItem(ellipseacc)
+            ellipseacc.setPen(QPen(QColor(91, 155, 213)))
+
+        textItem = QGraphicsTextItem()
+        textItem.setPlainText(str(key))
+        font = QFont()
+        font.setPointSizeF(ellipse_radius * 1.5)
+        textItem.setFont(font)
+        textItem.adjustSize()
+        textItem.setDefaultTextColor(QColor(255, 255, 255))
+        boundingRect = textItem.boundingRect()
+        textItem.setPos(pos[0] - boundingRect.width() / 2, pos[1] - boundingRect.height() / 2)
+        graphicsscene.addItem(textItem)
 
     # draw transitions
     trans = fa["transitions"]
@@ -262,7 +311,7 @@ if __name__ == "__main__":
     oldpwd = os.getcwd()
     os.chdir(wkpath)
     binpath = os.path.join(os.path.abspath(wkpath), "bin")
-    restr = "(abc)+(dp)*q|efg"
+    restr = "abc|def|hgi|ui"#"(abc)+(dp)*(rs)*q|efg"
     if len(sys.argv) > 1:
         restr = sys.argv[1]
     binpath = os.path.join(binpath, "Re2DFA")
