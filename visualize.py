@@ -6,11 +6,16 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 import sys
 import re
+import os
 import math
 
 ellipse_radius = 10
 wid = 100
 hei = 100
+
+
+def iswin():
+    return len(re.findall("win32|cygwin", sys.platform.lower())) > 0
 
 
 def normalize(l):
@@ -242,10 +247,24 @@ def draw(data, graphicsscene):
                     addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, cha)
 
 if __name__ == "__main__":
-    dfanfa = parseSerializedFile()
+    wkpath = os.path.abspath(os.path.dirname(__file__))
+    oldpwd = os.getcwd()
+    os.chdir(wkpath)
+    binpath = os.path.join(os.path.abspath(wkpath), "bin")
+    restr = "abc|def|hiqq"
+    if len(sys.argv) > 1:
+        restr = sys.argv[1]
+        
+    if iswin():
+        binpath = os.path.join(binpath, "Re2DFA")
+    else:
+        binpath = os.path.join(binpath, "Re2DFA")
+    ret = os.popen('%s "%s"' % (binpath, restr)).read()
+    dfanfa = parseSerializedFile(os.path.join(wkpath, "dfa.dfa"))
     app = QApplication(sys.argv)
     scene = QGraphicsScene()
     draw(dfanfa, scene)
+    print "cmdret: ", ret
     # text = QGraphicsTextItem()
     # text.setPlainText("123")
     # scene.addItem(text)
@@ -260,6 +279,7 @@ if __name__ == "__main__":
     # ellipse.setBrush(QtGui.QBrush.)
     # scene.addItem(ellipse)
     view = QGraphicsView(scene)
-    view.setWindowTitle("Re2NFA_DFA_MinDFA Visualization")
+    view.setWindowTitle(restr + "   Re2NFA_DFA_MinDFA Visualization")
     view.show()
+    os.chdir(oldpwd)
     sys.exit(app.exec_())

@@ -12,12 +12,12 @@ Convert `Regular Expression` to `NFA`, `DFA`, `Minimum DFA` and visualize `NFA`,
 * `cd bin`	
 * `Re2DFA.exe "(abc)+d*|efg"`
 
-NFA, DFA, Minimum DFA are saved in file `bin/dfa.dfa`
+NFA, DFA, Minimum DFA are saved in file `dfa.dfa`
 
 ##2. Visualization
 
 
-* `python visualize.py`
+* `python visualize.py "(abc)+d*|efg"`
 
 #You should know:
 ##1. Visualization requires `PySide`  
