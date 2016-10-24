@@ -8,6 +8,7 @@ import sys
 import re
 import os
 import math
+import copy
 
 ellipse_radius = 10
 wid = 100
@@ -76,9 +77,14 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     if not textstr is None:
         text = QGraphicsTextItem()
         text.setPlainText(textstr)
+        font = QFont()
+        font.setPointSizeF(ellipse_radius)
+        text.setFont(font)
+        text.adjustSize()
         boudingRect = text.boundingRect()
-        textpos = addl([tox, toy], mullf(linvec, 0.5))
+        textpos = addl([tox, toy], mullf(linvec, 0.75))
         text.setPos(textpos[0], textpos[1] - boudingRect.height()*0.5)
+        text.setScale(1.5)
         graphicsscene.addItem(text)
 
 
@@ -86,7 +92,7 @@ def parseSerializedFile(filename = "./bin/dfa.dfa"):
     serializedcontent = ""
     with open(filename) as f:
         serializedcontent = f.read()
-    print serializedcontent
+    # print serializedcontent
     ret = {}
     ret["NFA"] = {}
     ret["DFA"] = {}
@@ -163,7 +169,7 @@ def parseSerializedFile(filename = "./bin/dfa.dfa"):
     return ret
 
 
-def getpathtoaccepts(trans, curstate, processed, accpetstates):
+def getpathtoaccepts(trans, curstate, processed, accpetstates, circletimes = 1):
     ret = []
     if curstate in accpetstates:
         ret.append([curstate])
@@ -172,99 +178,101 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates):
     for key in curstatetrans.keys():
         itos = curstatetrans[key]
         for ito in itos:
-            if ito in processed and ito not in accpetstates:
+            if ito in processed and processed[ito] > circletimes and ito not in accpetstates:
                 continue
             else:
-                oldprocessed = []
-                oldprocessed.extend(processed)
-                processed.append(ito)
+                copedprocessed = copy.deepcopy(processed)
+                if ito in copedprocessed:
+                    copedprocessed[ito] += 1
+                else:
+                    copedprocessed[ito] = 1
+
                 if ito in accpetstates:
                     ret.append([curstate, ito])
                 else:
 
-                    l = getpathtoaccepts(trans, ito, processed, accpetstates)
+                    l = getpathtoaccepts(trans, ito, copedprocessed, accpetstates)
                     if l is not None:
                         for item in l:
                             newpath = [curstate]
                             newpath.extend(item)
                             ret.append(newpath)
-                processed = oldprocessed
+
     return ret
 
 
-def draw(data, graphicsscene):
+def draw(data, graphicsscene, fa):
     global wid, hei, ellipse_radius
-    for faitemname in ["MinDFA"]:# , "MinDFA", "NFA"]:
-        fa = data[faitemname]
-        fapaths = getpathtoaccepts(fa["transitions"], 0, [0], fa["accept"])
-        fapaths.sort(cmp=lambda x, y: len(x) - len(y))
-        print fapaths
-        posdic = {}
-        maxlen = len(fapaths[0]) * wid
-        row = 0
-        for item in fapaths:
-            col = 0
-            statenum = len(item)
-            for state in item:
-                if not posdic.has_key(state):
-                    posdic[state] = [row * wid, col * (maxlen) * 1.0 / statenum]
-                col += 1
+    fapaths = getpathtoaccepts(fa["transitions"], 0, {0: 1}, fa["accept"])
+    fapaths.sort(cmp=lambda x, y: len(x) - len(y))
+    print fapaths
+    posdic = {}
+    maxlen = len(fapaths[0]) * wid
+    row = 0
+    for item in fapaths:
+        col = 0
+        statenum = len(item)
+        for state in item:
+            if not posdic.has_key(state):
+                posdic[state] = [row * wid, col * (maxlen) * 1.0 / statenum]
+            col += 1
 
-            row += 1
+        row += 1
 
-        posdic[0] = [(len(fapaths) - 1)/2.0 * wid, posdic[0][1]]
-        # draw states
-        accepts = fa["accept"]
-        for key in posdic.keys():
-                pos = posdic[key]
-                textItem = QGraphicsTextItem()
-                textItem.setPlainText(str(key))
-                boundingRect = textItem.boundingRect()
-                textItem.setPos(pos[0] - boundingRect.width()/2, pos[1] - boundingRect.height()/2)
-                # textItem.setPos()
-                graphicsscene.addItem(textItem)
+    posdic[0] = [(len(fapaths) - 1) / 2.0 * wid, posdic[0][1]]
+    # draw states
+    accepts = fa["accept"]
+    for key in posdic.keys():
+        pos = posdic[key]
+        textItem = QGraphicsTextItem()
+        textItem.setPlainText(str(key))
+        font = QFont()
+        font.setPointSizeF(ellipse_radius * 1.5)
+        textItem.setFont(font)
+        textItem.adjustSize()
+        boundingRect = textItem.boundingRect()
+        textItem.setPos(pos[0] - boundingRect.width() / 2, pos[1] - boundingRect.height() / 2)
+        graphicsscene.addItem(textItem)
 
-                ellipse = QGraphicsEllipseItem(None, None)
-                ellipse.setRect(-ellipse_radius, -ellipse_radius, ellipse_radius*2, ellipse_radius*2)
-                ellipse.setPos(pos[0], pos[1])
-                graphicsscene.addItem(ellipse)
-                if key in accepts:
-                    ellipseacc = QGraphicsEllipseItem(None, None)
-                    ellipseacc.setRect(-1.3*ellipse_radius, -1.3*ellipse_radius, 1.3*2*ellipse_radius, 1.3*2*ellipse_radius)
-                    ellipseacc.setPos(pos[0], pos[1])
-                    graphicsscene.addItem(ellipseacc)
+        ellipse = QGraphicsEllipseItem(None, None)
+        ellipse.setRect(-ellipse_radius, -ellipse_radius, ellipse_radius * 2, ellipse_radius * 2)
+        ellipse.setPos(pos[0], pos[1])
+        graphicsscene.addItem(ellipse)
+        if key in accepts:
+            ellipseacc = QGraphicsEllipseItem(None, None)
+            ellipseacc.setRect(-1.3 * ellipse_radius, -1.3 * ellipse_radius, 1.3 * 2 * ellipse_radius,
+                               1.3 * 2 * ellipse_radius)
+            ellipseacc.setPos(pos[0], pos[1])
+            graphicsscene.addItem(ellipseacc)
 
+    # draw transitions
+    trans = fa["transitions"]
+    for ifromstate in trans.keys():
+        frompos = posdic[ifromstate]
+        transto = trans[ifromstate]
+        for cha in transto.keys():
+            itos = transto[cha]
+            for itostate in itos:
+                topos = posdic[itostate]
+                addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, cha)
 
-        # draw transitions
-        trans = fa["transitions"]
-        for ifromstate in trans.keys():
-            frompos = posdic[ifromstate]
-            transto = trans[ifromstate]
-            for cha in transto.keys():
-                itos = transto[cha]
-                for itostate in itos:
-                    topos = posdic[itostate]
-                    addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, cha)
 
 if __name__ == "__main__":
     wkpath = os.path.abspath(os.path.dirname(__file__))
     oldpwd = os.getcwd()
     os.chdir(wkpath)
     binpath = os.path.join(os.path.abspath(wkpath), "bin")
-    restr = "abc|def|hiqq"
+    restr = "(abc)+(dp)*q|efg"
     if len(sys.argv) > 1:
         restr = sys.argv[1]
-        
-    if iswin():
-        binpath = os.path.join(binpath, "Re2DFA")
-    else:
-        binpath = os.path.join(binpath, "Re2DFA")
+    binpath = os.path.join(binpath, "Re2DFA")
     ret = os.popen('%s "%s"' % (binpath, restr)).read()
+    print "cmdret: ", ret
     dfanfa = parseSerializedFile(os.path.join(wkpath, "dfa.dfa"))
     app = QApplication(sys.argv)
     scene = QGraphicsScene()
-    draw(dfanfa, scene)
-    print "cmdret: ", ret
+    draw(dfanfa, scene, dfanfa["MinDFA"])
+
     # text = QGraphicsTextItem()
     # text.setPlainText("123")
     # scene.addItem(text)
