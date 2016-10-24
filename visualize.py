@@ -8,6 +8,10 @@ import sys
 import re
 import math
 
+ellipse_radius = 10
+wid = 100
+hei = 100
+
 
 def normalize(l):
     sumnum = 0
@@ -25,6 +29,7 @@ def mullf(l, f):
         ret.append(i*f)
     return ret
 
+
 def addl(la, lb):
     ret = []
     for i in range(len(la)):
@@ -33,11 +38,12 @@ def addl(la, lb):
 
 
 def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
+    global ellipse_radius
     linvec = [fromx - tox, fromy - toy]
     if math.fabs(linvec[0]) < 0.0001 and math.fabs(linvec[1]) < 0.0001:
         return
 
-    radius = 10
+    radius = ellipse_radius
     newfrom = addl([fromx, fromy], mullf(normalize(linvec), -radius))
     newto = addl([tox, toy], mullf(normalize(linvec), radius))
     fromx, fromy = newfrom
@@ -62,13 +68,14 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
     graphicsscene.addItem(line)
 
-    if not textstr == None:
+    if not textstr is None:
         text = QGraphicsTextItem()
         text.setPlainText(textstr)
         boudingRect = text.boundingRect()
-        text.setPos((fromx + fromy)/2.0 - boudingRect.width()/2, (tox + toy)/2.0 - boudingRect.height()/2)
-
+        textpos = addl([tox, toy], mullf(linvec, 0.5))
+        text.setPos(textpos[0], textpos[1] - boudingRect.height()*0.5)
         graphicsscene.addItem(text)
+
 
 def parseSerializedFile(filename = "./bin/dfa.dfa"):
     serializedcontent = ""
@@ -150,6 +157,7 @@ def parseSerializedFile(filename = "./bin/dfa.dfa"):
 
     return ret
 
+
 def getpathtoaccepts(trans, curstate, processed, accpetstates):
     ret = []
     if curstate in accpetstates:
@@ -170,7 +178,7 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates):
                 else:
 
                     l = getpathtoaccepts(trans, ito, processed, accpetstates)
-                    if not l == None:
+                    if l is not None:
                         for item in l:
                             newpath = [curstate]
                             newpath.extend(item)
@@ -178,11 +186,10 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates):
                 processed = oldprocessed
     return ret
 
-def draw(data, graphicsscene):
-    wid = 100
-    hei = 100
 
-    for faitemname in ["DFA"]:# , "MinDFA", "NFA"]:
+def draw(data, graphicsscene):
+    global wid, hei, ellipse_radius
+    for faitemname in ["MinDFA"]:# , "MinDFA", "NFA"]:
         fa = data[faitemname]
         fapaths = getpathtoaccepts(fa["transitions"], 0, [0], fa["accept"])
         fapaths.sort(cmp=lambda x, y: len(x) - len(y))
@@ -202,21 +209,28 @@ def draw(data, graphicsscene):
 
         posdic[0] = [(len(fapaths) - 1)/2.0 * wid, posdic[0][1]]
         # draw states
+        accepts = fa["accept"]
         for key in posdic.keys():
                 pos = posdic[key]
                 textItem = QGraphicsTextItem()
                 textItem.setPlainText(str(key))
                 boundingRect = textItem.boundingRect()
                 textItem.setPos(pos[0] - boundingRect.width()/2, pos[1] - boundingRect.height()/2)
-                #textItem.setPos()
+                # textItem.setPos()
                 graphicsscene.addItem(textItem)
 
                 ellipse = QGraphicsEllipseItem(None, None)
-                ellipse.setRect(-10, -10, 20, 20)
+                ellipse.setRect(-ellipse_radius, -ellipse_radius, ellipse_radius*2, ellipse_radius*2)
                 ellipse.setPos(pos[0], pos[1])
                 graphicsscene.addItem(ellipse)
+                if key in accepts:
+                    ellipseacc = QGraphicsEllipseItem(None, None)
+                    ellipseacc.setRect(-1.3*ellipse_radius, -1.3*ellipse_radius, 1.3*2*ellipse_radius, 1.3*2*ellipse_radius)
+                    ellipseacc.setPos(pos[0], pos[1])
+                    graphicsscene.addItem(ellipseacc)
 
-        #draw transitions
+
+        # draw transitions
         trans = fa["transitions"]
         for ifromstate in trans.keys():
             frompos = posdic[ifromstate]
@@ -225,7 +239,7 @@ def draw(data, graphicsscene):
                 itos = transto[cha]
                 for itostate in itos:
                     topos = posdic[itostate]
-                    addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, None)
+                    addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, cha)
 
 if __name__ == "__main__":
     dfanfa = parseSerializedFile()
@@ -246,5 +260,6 @@ if __name__ == "__main__":
     # ellipse.setBrush(QtGui.QBrush.)
     # scene.addItem(ellipse)
     view = QGraphicsView(scene)
+    view.setWindowTitle("Re2NFA_DFA_MinDFA Visualization")
     view.show()
     sys.exit(app.exec_())
