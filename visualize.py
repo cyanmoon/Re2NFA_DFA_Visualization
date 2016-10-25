@@ -11,9 +11,17 @@ import math
 import copy
 
 ellipse_radius = 15
-wid = 200
-hei = 100
-
+wid = 100
+hei = 80
+arrowcolor = QColor(91, 1, 2) # QColor(255, 155, 213)
+linecolor = QColor(92, 155, 213)
+textcolor = QColor(91, 1, 2)
+statebgcolor = QColor(112, 173, 71)
+statecirclecolor = QColor(91, 154, 213)
+stateacceptcolor = QColor(112, 173, 71) # QColor(91, 1, 2)
+statetextcolor = QColor(255, 255, 255)
+linetextpos = 0.5
+curvetextpos = 0.5
 
 def iswin():
     return len(re.findall("win32|cygwin", sys.platform.lower())) > 0
@@ -43,8 +51,10 @@ def addl(la, lb):
     return ret
 
 
-def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
-    global ellipse_radius
+def addTrans(fromstate, tostate, posdic, graphicsscene, textstr = None):
+    global wid, hei, ellipse_radius, arrowcolor, linecolor, textcolor, statebgcolor, statecirclecolor, stateacceptcolor, statetextcolor, linetextpos, curvetextpos
+    fromx, fromy = posdic[fromstate]
+    tox, toy = posdic[tostate]
     linvec = [fromx - tox, fromy - toy]
     radius = ellipse_radius
     # curve to self
@@ -52,15 +62,16 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
         ori_pos = [fromx, fromy]
         fromy += ellipse_radius
         toy -= ellipse_radius
-        vec = [4*radius, 6*radius]
+        vec = [-4*radius, 6*radius]
         paintpath = QPainterPath()
         paintpath.moveTo(fromx, fromy)
         paintpath.cubicTo(fromx + vec[0], fromy + vec[1], tox + vec[0], toy - vec[1], tox, toy)
         paintpath.moveTo(tox, toy)
-        graphicsscene.addPath(paintpath, QPen(QColor(91, 155, 213)))
+        graphicsscene.addPath(paintpath, QPen(linecolor))
 
         # add arrow
-        linvec = [10, -15]
+        nearendpos = paintpath.pointAtPercent(0.98)
+        linvec = [nearendpos.x() - tox, nearendpos.y() - toy]
         angle = math.pi / 6
         uparrowvec = [linvec[0] * math.cos(angle) - linvec[1] * math.sin(angle)
             , linvec[0] * math.sin(angle) + linvec[1] * math.cos(angle)]
@@ -72,10 +83,10 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
         uparrowendpos = [tox + arrowlen * normalizedUp[0], toy + arrowlen * normalizedUp[1]]
         downarrowendpos = [tox + arrowlen * normalizedDown[0], toy + arrowlen * normalizedDown[1]]
         line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
-        line.setPen(QPen(QColor(91, 155, 213)))
+        line.setPen(QPen(arrowcolor))
         graphicsscene.addItem(line)
         line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
-        line.setPen(QPen(QColor(91, 155, 213)))
+        line.setPen(QPen(arrowcolor))
         graphicsscene.addItem(line)
 
         # add text
@@ -87,9 +98,9 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
             text.setFont(font)
             text.adjustSize()
             boudingRect = text.boundingRect()
-            textpos = [ori_pos[0] + vec[0]*0.45, ori_pos[1]]
-            text.setPos(textpos[0], textpos[1] - boudingRect.height() * 0.5)
-            text.setDefaultTextColor(QColor(91, 155, 213))
+            textpos = paintpath.pointAtPercent(curvetextpos)
+            text.setPos(textpos.x(), textpos.y() - boudingRect.height() * 0.5)
+            text.setDefaultTextColor(textcolor)
             graphicsscene.addItem(text)
         return
     newfrom = addl([fromx, fromy], mullf(normalize(linvec), -radius))
@@ -97,9 +108,53 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     fromx, fromy = newfrom
     tox, toy = newto
     line = QGraphicsLineItem(fromx, fromy, tox, toy)
-    line.setPen(QPen(QColor(91, 155, 213)))
+    line.setPen(QPen(linecolor))
     graphicsscene.addItem(line)
+    collidingitems = scene.collidingItems(line)
+    collidinglines = [x for x in collidingitems if x.type() == line.type()]
+    # curve to tostate
+    if len(collidinglines) > 0:
+        graphicsscene.removeItem(line)
+        vec = [-8*radius, 7*radius]
+        paintpath = QPainterPath()
+        paintpath.moveTo(fromx, fromy)
+        paintpath.cubicTo(fromx + vec[0], fromy + vec[1], tox + vec[0], toy - vec[1], tox, toy)
+        paintpath.moveTo(tox, toy)
+        graphicsscene.addPath(paintpath, QPen(linecolor))
 
+        # add arrow
+        nearendpos = paintpath.pointAtPercent(0.98)
+        linvec = [nearendpos.x() - tox, nearendpos.y() - toy]
+        angle = math.pi / 6
+        uparrowvec = [linvec[0] * math.cos(angle) - linvec[1] * math.sin(angle)
+            , linvec[0] * math.sin(angle) + linvec[1] * math.cos(angle)]
+        downarrowvec = [linvec[0] * math.cos(-angle) - linvec[1] * math.sin(-angle)
+            , linvec[0] * math.sin(-angle) + linvec[1] * math.cos(-angle)]
+        arrowlen = 0.8 * radius
+        normalizedUp = normalize(uparrowvec)
+        normalizedDown = normalize(downarrowvec)
+        uparrowendpos = [tox + arrowlen * normalizedUp[0], toy + arrowlen * normalizedUp[1]]
+        downarrowendpos = [tox + arrowlen * normalizedDown[0], toy + arrowlen * normalizedDown[1]]
+        line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
+        line.setPen(QPen(arrowcolor))
+        graphicsscene.addItem(line)
+        line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
+        line.setPen(QPen(arrowcolor))
+        graphicsscene.addItem(line)
+        # add text
+        if textstr is not None:
+            text = QGraphicsTextItem()
+            text.setPlainText("%s" % (textstr))
+            font = QFont()
+            font.setPointSizeF(ellipse_radius * 1.2)
+            text.setFont(font)
+            text.adjustSize()
+            boudingRect = text.boundingRect()
+            textpos = paintpath.pointAtPercent(curvetextpos)
+            text.setPos(textpos.x(), textpos.y() - boudingRect.height() * 0.5)
+            text.setDefaultTextColor(textcolor)
+            graphicsscene.addItem(text)
+        return
 
     linvec = [fromx - tox, fromy - toy]
     angle = math.pi/6
@@ -113,10 +168,10 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     uparrowendpos = [tox + arrowlen*normalizedUp[0], toy + arrowlen*normalizedUp[1]]
     downarrowendpos = [tox + arrowlen*normalizedDown[0], toy + arrowlen*normalizedDown[1]]
     line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
-    line.setPen(QPen(QColor(91, 155, 213)))
+    line.setPen(QPen(arrowcolor))
     graphicsscene.addItem(line)
     line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
-    line.setPen(QPen(QColor(91, 155, 213)))
+    line.setPen(QPen(arrowcolor))
     graphicsscene.addItem(line)
 
     if textstr is not None:
@@ -127,9 +182,9 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
         text.setFont(font)
         text.adjustSize()
         boudingRect = text.boundingRect()
-        textpos = addl([tox, toy], mullf(linvec, 0.85))
+        textpos = addl([tox, toy], mullf(linvec, 1 - linetextpos))
         text.setPos(textpos[0], textpos[1] - boudingRect.height()*0.5)
-        text.setDefaultTextColor(QColor(91, 155, 213))
+        text.setDefaultTextColor(textcolor)
         graphicsscene.addItem(text)
 
 
@@ -149,7 +204,7 @@ def parseSerializedFile(filename = "./bin/dfa.dfa"):
     mindfaindex = serializedcontent.find("Minimum DFA:")
     if dfaindex >= 0:
         nfaseg = serializedcontent[:dfaindex]
-        
+
     if mindfaindex >= 0 and mindfaindex > dfaindex:
         dfaseg = serializedcontent[dfaindex:mindfaindex]
         mindfaseg = serializedcontent[mindfaindex:]
@@ -246,7 +301,7 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates, circletimes = 1):
 
 
 def draw(data, graphicsscene, fa):
-    global wid, hei, ellipse_radius
+    global wid, hei, ellipse_radius, arrowcolor, linecolor, textcolor, statebgcolor, statecirclecolor, stateacceptcolor, statetextcolor, linetextpos, curvetextpos
     fapaths = []
     for acceptstate in fa["accept"]:
         tmp = getpathtoaccepts(fa["transitions"], 0, {0: 1}, [acceptstate])
@@ -320,8 +375,8 @@ def draw(data, graphicsscene, fa):
         ellipse = QGraphicsEllipseItem(None, None)
         ellipse.setRect(-ellipse_radius, -ellipse_radius, ellipse_radius * 2, ellipse_radius * 2)
         ellipse.setPos(pos[0], pos[1])
-        ellipse.setBrush(QBrush(QColor(112,173,71), style = Qt.SolidPattern))
-        ellipse.setPen(QPen(QColor(91, 155, 213)))
+        ellipse.setBrush(QBrush(statebgcolor, style = Qt.SolidPattern))
+        ellipse.setPen(QPen(statecirclecolor))
         graphicsscene.addItem(ellipse)
         if key in accepts:
             ellipseacc = QGraphicsEllipseItem(None, None)
@@ -329,7 +384,7 @@ def draw(data, graphicsscene, fa):
                                1.3 * 2 * ellipse_radius)
             ellipseacc.setPos(pos[0], pos[1])
             graphicsscene.addItem(ellipseacc)
-            ellipseacc.setPen(QPen(QColor(91, 155, 213)))
+            ellipseacc.setPen(QPen(stateacceptcolor))
 
         textItem = QGraphicsTextItem()
         textItem.setPlainText(str(key))
@@ -337,7 +392,7 @@ def draw(data, graphicsscene, fa):
         font.setPointSizeF(ellipse_radius * 1.5)
         textItem.setFont(font)
         textItem.adjustSize()
-        textItem.setDefaultTextColor(QColor(255, 255, 255))
+        textItem.setDefaultTextColor(statetextcolor)
         boundingRect = textItem.boundingRect()
         textItem.setPos(pos[0] - boundingRect.width() / 2, pos[1] - boundingRect.height() / 2)
         graphicsscene.addItem(textItem)
@@ -345,13 +400,13 @@ def draw(data, graphicsscene, fa):
     # draw transitions
     trans = fa["transitions"]
     for ifromstate in trans.keys():
-        frompos = posdic[ifromstate]
+        # frompos = posdic[ifromstate]
         transto = trans[ifromstate]
         for cha in transto.keys():
             itos = transto[cha]
             for itostate in itos:
-                topos = posdic[itostate]
-                addArrow(frompos[0], frompos[1], topos[0], topos[1], graphicsscene, cha)
+                # topos = posdic[itostate]
+                addTrans(ifromstate, itostate, posdic, graphicsscene, cha)
 
 
 if __name__ == "__main__":
@@ -359,8 +414,7 @@ if __name__ == "__main__":
     oldpwd = os.getcwd()
     os.chdir(wkpath)
     binpath = os.path.join(os.path.abspath(wkpath), "bin")
-    restr = "123*|abcd*"
-    # restr = "(abc)+(dp)*(rs)*q|efg"
+    restr = "a(bc)+d*|ef*h+"
     if len(sys.argv) > 1:
         restr = sys.argv[1]
     binpath = os.path.join(binpath, "Re2DFA")
