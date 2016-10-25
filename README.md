@@ -1,5 +1,10 @@
 # Re2NFA_DFA_Visualization
 Convert `Regular Expression` to `NFA`, `DFA`, `Minimum DFA` and visualize `NFA`, `DFA`, `Minimum DFA`.
+#Sample
+![alt text][logo]
+
+[logo]: https://raw.githubusercontent.com/cyanmoon/Re2NFA_DFA_Visualization/master/sample.png "Sample"
+
 #Usage:
 
 ##1. Get NFA, DFA, Minimum DFA
@@ -24,8 +29,4 @@ NFA, DFA, Minimum DFA are saved in file `dfa.dfa`
 * https://pypi.python.org/pypi/PySide/1.2.4
 * http://wiki.qt.io/PySide
 
-#Sample
-![alt text][logo]
-
-[logo]: https://raw.githubusercontent.com/cyanmoon/Re2NFA_DFA_Visualization/master/sample.png "Logo Title Text 2"
 
