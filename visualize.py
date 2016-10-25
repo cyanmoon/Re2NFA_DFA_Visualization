@@ -257,8 +257,10 @@ def draw(data, graphicsscene, fa):
         statenum = len(item)
         for state in item:
             if not posdic.has_key(state):
-                offset = math.fabs(row - length/2)/length
-                posdic[state] = [row * wid, -offset * maxlen +  col * maxlen * 1.0 / statenum]
+                offset = 0
+                if length > 1:
+                    offset = math.fabs(row - (length - 1)/2)/(length - 1)
+                posdic[state] = [row * wid, offset * maxlen +  col * maxlen * 1.0 / statenum]
 
             col += 1
 
@@ -311,7 +313,8 @@ if __name__ == "__main__":
     oldpwd = os.getcwd()
     os.chdir(wkpath)
     binpath = os.path.join(os.path.abspath(wkpath), "bin")
-    restr = "abc|def|hgi|ui"#"(abc)+(dp)*(rs)*q|efg"
+    restr = "abc|def|hgi|ui"
+    # restr = "(abc)+(dp)*(rs)*q|efg"
     if len(sys.argv) > 1:
         restr = sys.argv[1]
     binpath = os.path.join(binpath, "Re2DFA")
