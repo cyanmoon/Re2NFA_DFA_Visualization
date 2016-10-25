@@ -29,6 +29,7 @@ NFA, DFA, Minimum DFA are saved in file `dfa.dfa`
 ##1. Visualization requires `PySide`  
 * https://pypi.python.org/pypi/PySide/1.2.4
 * http://wiki.qt.io/PySide
+
 ##2. Regular Expression supported operators
 * `()`
 * `|`
