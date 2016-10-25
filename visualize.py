@@ -46,10 +46,52 @@ def addl(la, lb):
 def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     global ellipse_radius
     linvec = [fromx - tox, fromy - toy]
-    if math.fabs(linvec[0]) < 0.0001 and math.fabs(linvec[1]) < 0.0001:
-        return
-
     radius = ellipse_radius
+    # curve to self
+    if math.fabs(linvec[0]) < 0.0001 and math.fabs(linvec[1]) < 0.0001:
+        ori_pos = [fromx, fromy]
+        fromy += ellipse_radius
+        toy -= ellipse_radius
+        vec = [4*radius, 6*radius]
+        paintpath = QPainterPath()
+        paintpath.moveTo(fromx, fromy)
+        paintpath.cubicTo(fromx + vec[0], fromy + vec[1], tox + vec[0], toy - vec[1], tox, toy)
+        paintpath.moveTo(tox, toy)
+        graphicsscene.addPath(paintpath, QPen(QColor(91, 155, 213)))
+
+        # add arrow
+        linvec = [10, -15]
+        angle = math.pi / 6
+        uparrowvec = [linvec[0] * math.cos(angle) - linvec[1] * math.sin(angle)
+            , linvec[0] * math.sin(angle) + linvec[1] * math.cos(angle)]
+        downarrowvec = [linvec[0] * math.cos(-angle) - linvec[1] * math.sin(-angle)
+            , linvec[0] * math.sin(-angle) + linvec[1] * math.cos(-angle)]
+        arrowlen = 0.8 * radius
+        normalizedUp = normalize(uparrowvec)
+        normalizedDown = normalize(downarrowvec)
+        uparrowendpos = [tox + arrowlen * normalizedUp[0], toy + arrowlen * normalizedUp[1]]
+        downarrowendpos = [tox + arrowlen * normalizedDown[0], toy + arrowlen * normalizedDown[1]]
+        line = QGraphicsLineItem(uparrowendpos[0], uparrowendpos[1], tox, toy)
+        line.setPen(QPen(QColor(91, 155, 213)))
+        graphicsscene.addItem(line)
+        line = QGraphicsLineItem(downarrowendpos[0], downarrowendpos[1], tox, toy)
+        line.setPen(QPen(QColor(91, 155, 213)))
+        graphicsscene.addItem(line)
+
+        # add text
+        if textstr is not None:
+            text = QGraphicsTextItem()
+            text.setPlainText("%s" % (textstr))
+            font = QFont()
+            font.setPointSizeF(ellipse_radius * 1.2)
+            text.setFont(font)
+            text.adjustSize()
+            boudingRect = text.boundingRect()
+            textpos = [ori_pos[0] + vec[0]*0.45, ori_pos[1]]
+            text.setPos(textpos[0], textpos[1] - boudingRect.height() * 0.5)
+            text.setDefaultTextColor(QColor(91, 155, 213))
+            graphicsscene.addItem(text)
+        return
     newfrom = addl([fromx, fromy], mullf(normalize(linvec), -radius))
     newto = addl([tox, toy], mullf(normalize(linvec), radius))
     fromx, fromy = newfrom
@@ -77,7 +119,7 @@ def addArrow(fromx, fromy, tox, toy, graphicsscene, textstr = None):
     line.setPen(QPen(QColor(91, 155, 213)))
     graphicsscene.addItem(line)
 
-    if not textstr is None:
+    if textstr is not None:
         text = QGraphicsTextItem()
         text.setPlainText("%s"%(textstr))
         font = QFont()
@@ -193,7 +235,6 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates, circletimes = 1):
                 if ito in accpetstates:
                     ret.append([curstate, ito])
                 else:
-
                     l = getpathtoaccepts(trans, ito, copedprocessed, accpetstates)
                     if l is not None:
                         for item in l:
@@ -206,7 +247,10 @@ def getpathtoaccepts(trans, curstate, processed, accpetstates, circletimes = 1):
 
 def draw(data, graphicsscene, fa):
     global wid, hei, ellipse_radius
-    fapaths = getpathtoaccepts(fa["transitions"], 0, {0: 1}, fa["accept"])
+    fapaths = []
+    for acceptstate in fa["accept"]:
+        tmp = getpathtoaccepts(fa["transitions"], 0, {0: 1}, [acceptstate])
+        fapaths.extend(tmp)
     fapaths.sort(cmp=lambda x, y: len(x) - len(y))
     length = len(fapaths)
     maxlenpath = fapaths[-1]
@@ -231,22 +275,24 @@ def draw(data, graphicsscene, fa):
     for item in pathstorm:
         fapaths.remove(item)
 
-    if length % 2 == 0:
-        patha = fapaths[0:length/2]
-        pathb = fapaths[length/2:]
-        patha.sort(cmp=lambda x, y: len(x) - len(y))
-        pathb.sort(cmp=lambda x, y: len(y) - len(x))
-        if len(pathb[0]) > len(patha[-1]):
-            tmp = patha[-1]
-            patha[-1] = pathb[0]
-            pathb[0] = tmp
-        fapaths = patha + pathb
-    else:
-        patha = fapaths[0:length/2]
-        pathb = fapaths[length/2: -1]
-        patha.sort(cmp=lambda x, y: len(x) - len(y))
-        pathb.sort(cmp=lambda x, y: len(y) - len(x))
-        fapaths = patha + [fapaths[-1]] + pathb
+    length = len(fapaths)
+    if length > 1:
+        if length % 2 == 0:
+            patha = fapaths[0:length / 2]
+            pathb = fapaths[length / 2:]
+            patha.sort(cmp=lambda x, y: len(x) - len(y))
+            pathb.sort(cmp=lambda x, y: len(y) - len(x))
+            if len(pathb[0]) > len(patha[-1]):
+                tmp = patha[-1]
+                patha[-1] = pathb[0]
+                pathb[0] = tmp
+            fapaths = patha + pathb
+        else:
+            patha = fapaths[0:length / 2]
+            pathb = fapaths[length / 2: -1]
+            patha.sort(cmp=lambda x, y: len(x) - len(y))
+            pathb.sort(cmp=lambda x, y: len(y) - len(x))
+            fapaths = patha + [fapaths[-1]] + pathb
 
     print fapaths
     posdic = {}
@@ -313,7 +359,7 @@ if __name__ == "__main__":
     oldpwd = os.getcwd()
     os.chdir(wkpath)
     binpath = os.path.join(os.path.abspath(wkpath), "bin")
-    restr = "abc|def|hgi|ui"
+    restr = "123*|abcd*"
     # restr = "(abc)+(dp)*(rs)*q|efg"
     if len(sys.argv) > 1:
         restr = sys.argv[1]
