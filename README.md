@@ -1,6 +1,7 @@
 # Re2NFA_DFA_Visualization
 Convert `Regular Expression` to `NFA`, `DFA`, `Minimum DFA` and visualize `NFA`, `DFA`, `Minimum DFA`.
 #Sample
+####Visualization of Regular Expression `"a(bc)+|ef8*"`
 ![alt text][logo]
 
 [logo]: https://raw.githubusercontent.com/cyanmoon/Re2NFA_DFA_Visualization/master/sample.png "Sample"
