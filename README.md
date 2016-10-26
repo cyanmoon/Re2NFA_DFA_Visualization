@@ -12,18 +12,18 @@ Convert `Regular Expression` to `NFA`, `DFA`, `Minimum DFA` and visualize `NFA`,
 
 ###MacOS:		
 * `cd bin`
-* `./Re2DFA "(abc)+(dp)*q|efg"`
+* `./Re2DFA "a(bc)+|ef8*"`
 
 ###Windows:
 * `cd bin`	
-* `Re2DFA.exe "(abc)+(dp)*q|efg"`
+* `Re2DFA.exe "a(bc)+|ef8*"`
 
 NFA, DFA, Minimum DFA are saved in file `dfa.dfa`
 
 ##2. Visualization
 
 
-* `python visualize.py "(abc)+(dp)*q|efg"`
+* `python visualize.py "a(bc)+|ef8*"`
 
 #You should know:
 ##1. Visualization requires `PySide`  
