@@ -1,0 +1,29 @@
+create Log Instance
+ >>ChechReSyntax:  a(bc)+|ef8* 1 NFA: 
+1 ==== a	====> 2 
+4 ==== epsilon	====> 2 
+0 ==== epsilon	====> 1 
+2 ==== b	====> 3 
+3 ==== c	====> 4 
+0 ==== epsilon	====> 5 
+5 ==== e	====> 6 
+6 ==== f	====> 7 
+8 ==== epsilon	====> 7 
+7 ==== 8	====> 8 
+8 ==== epsilon	====> 9 
+7 ==== epsilon	====> 9 
+4 ==== epsilon	====> 10 
+9 ==== epsilon	====> 10 
+Accept: 
+10 >>ChechReSyntax:  a(bc)+|ef8* 1 hash of new state  0 38 hash of new state  2 6 hash of new state  3 7930 hash of new state  4 260578 hash of new state  1 2 hash of new state  5 3 hash of new state  6 2320 BuildDFA end a(bc)+|ef8* DFA:
+ 0==== a ====>1
+0==== e ====>2
+1==== b ====>5
+2==== f ====>3
+3==== 8 ====>4
+4==== 8 ====>4
+5==== c ====>6
+6==== b ====>5
+ Accept:
+ 3 , 4 , 6 ,  Minimize failed! Cur DFA is already minimum!!!! Clear Log Instane
+ 
