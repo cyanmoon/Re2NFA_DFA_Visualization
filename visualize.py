@@ -56,8 +56,23 @@ def addTrans(fromstate, tostate, posdic, graphicsscene, textstr = None):
     fromx, fromy = posdic[fromstate]
     tox, toy = posdic[tostate]
     radius = ellipse_radius
-    vec = [-3 * radius, 3 * radius]
-    vec = mullf(vec, (fromy - toy) / hei)
+    linevec = [tox - fromx, toy - fromy]
+    vec = [-radius, radius]
+    if fromstate == tostate:
+        fromx -= radius
+        fromy += 0.2*radius
+        tox -= radius
+        vec = mullf(vec, 8)
+    else:
+        linevec = normalize(linevec)
+        fromx, fromy = addl([fromx, fromy], mullf(linevec, ellipse_radius))
+        tox, toy = addl([tox, toy], mullf(linevec, -1 * ellipse_radius))
+        linevec = mullf(normalize([tox - fromx, toy - fromy]), radius*2)
+        vec = [-linevec[1], linevec[0]]
+        if fromy > toy:
+            vec = mullf(vec, -1)
+        vec = mullf(vec, (fromy - toy) / hei)
+
     paintpath = QPainterPath()
     paintpath.moveTo(fromx, fromy)
     paintpath.cubicTo(fromx + vec[0], fromy + vec[1], tox + vec[0], toy - vec[1], tox, toy)
@@ -335,7 +350,7 @@ if __name__ == "__main__":
     dfanfa = parseSerializedFile(os.path.join(wkpath, "dfa.dfa"))
     app = QApplication(sys.argv)
     scene = QGraphicsScene()
-    draw(scene, dfanfa["NFA"])
+    draw(scene, dfanfa["MinDFA"])
     view = QGraphicsView(scene)
     view.setWindowTitle(restr)
     # + "   Re2NFA_DFA_MinDFA Visualization")
