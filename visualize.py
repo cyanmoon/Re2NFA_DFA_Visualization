@@ -80,7 +80,7 @@ def addTrans(fromstate, tostate, posdic, graphicsscene, textstr = None):
     graphicsscene.addPath(paintpath, QPen(linecolor))
 
     # add arrow
-    nearendpos = paintpath.pointAtPercent(0.98)
+    nearendpos = paintpath.pointAtPercent(0.8)
     linvec = [nearendpos.x() - tox, nearendpos.y() - toy]
     angle = math.pi / 6
     uparrowvec = [linvec[0] * math.cos(angle) - linvec[1] * math.sin(angle)
@@ -341,7 +341,7 @@ if __name__ == "__main__":
     oldpwd = os.getcwd()
     os.chdir(wkpath)
     binpath = os.path.join(os.path.abspath(wkpath), "bin")
-    restr = "a|d+(fg)*"
+    restr = "(abc)+(dp)*q|efg"
     if len(sys.argv) > 1:
         restr = sys.argv[1]
     binpath = os.path.join(binpath, "Re2DFA")
