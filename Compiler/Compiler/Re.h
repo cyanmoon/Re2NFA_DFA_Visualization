@@ -58,6 +58,7 @@ class ReItem
 public:
     ReItem();
     ~ReItem();
+    ReItem(const ReItem& item);
     int iStartState;
     int iEndState;
     std::vector<int> m_VecStates;

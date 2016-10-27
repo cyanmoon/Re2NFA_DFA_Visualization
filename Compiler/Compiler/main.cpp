@@ -14,14 +14,15 @@ int main(int argc, char** argv)
     }
     
     //Test samples
-    DFA("ade|bde");
-    DFA("(a|b)|(c)(d)(e)(f)");
-    DFA("a|b|c|d|e|fg");
-    DFA("(a(b(c(d(e)))))");
-    DFA("(aA|(bB|(cC|(dD|(eE)))))");
-    DFA("abc*");
-    DFA("(abc)+");
-    DFA("(abc)+|hlp");
+    DFA("a|(d)+f*");
+//     DFA("ade|bde");
+//     DFA("(a|b)|(c)(d)(e)(f)");
+//     DFA("a|b|c|d|e|fg");
+//     DFA("(a(b(c(d(e)))))");
+//     DFA("(aA|(bB|(cC|(dD|(eE)))))");
+//     DFA("abc*");
+//     DFA("(abc)+");
+//     DFA("(abc)+|hlp");
     //Test samples end
 //     std::setprecision(10);
 //     auto a = DFA("(a|(b*c+d*)*)");

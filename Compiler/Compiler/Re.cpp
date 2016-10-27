@@ -107,6 +107,32 @@ ReItem::~ReItem()
     m_DicStateToFormerTransLine.clear();
 }
 
+ReItem::ReItem(const ReItem& item)
+{
+    iStartState = item.iStartState;
+    iEndState = item.iEndState;
+    m_VecStates = item.m_VecStates;
+    m_SetStates = item.m_SetStates;
+    for (auto itor = item.m_DicStateToFormerTransLine.cbegin(); itor != item.m_DicStateToFormerTransLine.cend(); ++itor)
+    {
+        if (m_DicStateToFormerTransLine.find(itor->first) == m_DicStateToFormerTransLine.end())
+        {
+            vector<TransLine* > linvec;
+            m_DicStateToFormerTransLine.insert(pair<int, vector<TransLine*> >(itor->first, linvec));
+        }
+
+        for (auto lineitor = itor->second.cbegin(); lineitor != itor->second.cend(); ++lineitor)
+        {
+            TransLine* line = new TransLine;
+            line->iStartState = (*lineitor)->iStartState;
+            line->iEndState = (*lineitor)->iEndState;
+            line->cTransCha = (*lineitor)->cTransCha;
+            line->epsilon = (*lineitor)->epsilon;
+            m_DicStateToFormerTransLine[itor->first].push_back(line);
+        }
+    }
+}
+
 void ReItem::AddTrans(int from, int to, char c, char eplison)
 {
     for (auto itor = m_DicStateToFormerTransLine.begin(); itor != m_DicStateToFormerTransLine.end(); ++itor)
@@ -272,10 +298,13 @@ ReItem* DFA::BuildReItemWithAdd(ReItem* node)
 {
     if (nullptr != node)
     {
-        int endState = node->iEndState;
-        int startState = node->iStartState;
-        //epsilon trans
-        node->AddTrans(endState, startState, SpecialChar::Epsilon, SpecialChar::Epsilon);
+        ReItem* copyedNode = new ReItem(*node);
+        ReItem* newitem = BuildReItemWithStar(copyedNode);
+        node = BuildReItemWithLink(node, newitem);
+//         int endState = node->iEndState;
+//         int startState = node->iStartState;
+//         //epsilon trans
+//         node->AddTrans(endState, startState, SpecialChar::Epsilon, SpecialChar::Epsilon);
     }
 
     return node;

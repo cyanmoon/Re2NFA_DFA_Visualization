@@ -1,1 +1,8 @@
 .DS_Store
+.idea
+dfa.dfa
+log.txt
+Compiler/Release
+Compiler/Compiler/Debug
+Compiler/Compiler/Release
+*.tlog
